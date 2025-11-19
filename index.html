@@ -5,18 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>รายงานอะไหล่รับคืน TSC</title>
   <!-- Enhanced Content Security Policy to reduce phishing risks -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://code.jquery.com https://opensheet.elk.sh https://docs.google.com https://script.google.com https://script.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: blob: https://drive.google.com https://lh3.googleusercontent.com; connect-src 'self' https://opensheet.elk.sh https://docs.google.com https://script.google.com https://script.googleusercontent.com; frame-src https://docs.google.com https://drive.google.com; object-src 'none'; base-uri 'self'; form-action 'self' https://docs.google.com;">
-    <!-- Additional security headers via meta -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <!-- Removed invalid X-Frame-Options meta; set via server if needed -->
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <!-- Verification meta to help with Safe Browsing (add your site verification if available) -->
-    <meta name="google-site-verification" content="your-verification-token-if-any">
-    <!-- Clear description to indicate legitimacy -->
-    <meta name="description" content="ระบบภายในสำหรับรายงานข้อมูลอะไหล่คลังสินค้านวนคร - เครื่องมือสำหรับพนักงานเท่านั้น ไม่ใช่เว็บไซต์ภายนอก">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://unpkg.com https://code.jquery.com https://opensheet.elk.sh https://docs.google.com https://script.google.com https://script.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: blob: https://drive.google.com https://lh3.googleusercontent.com; connect-src 'self' https://opensheet.elk.sh https://docs.google.com https://script.google.com https://script.googleusercontent.com; frame-src https://docs.google.com https://drive.google.com; object-src 'none'; base-uri 'self'; form-action 'self' https://docs.google.com;">
+  <!-- Additional security headers via meta -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- Verification meta to help with Safe Browsing (add your site verification if available) -->
+  <meta name="google-site-verification" content="your-verification-token-if-any">
+  <!-- Clear description to indicate legitimacy -->
+  <meta name="description" content="ระบบภายในสำหรับรายงานข้อมูลอะไหล่คลังสินค้านวนคร - เครื่องมือสำหรับพนักงานเท่านั้น ไม่ใช่เว็บไซต์ภายนอก">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- ลบ Chart.js script เพื่อแก้ CSP error ถ้าต้องการใช้ ให้เพิ่มกลับและปรับ connect-src -->
   <style>
     body { font-family: 'Prompt', sans-serif; background-color: #f0f4f8; margin: 0; padding: 10px; }
     .report-title {
@@ -314,7 +313,7 @@
       box-shadow:0 8px 25px rgba(245,87,108,.35);
     }
     .table-container{ overflow-x:auto; width:100%; }
-    table{ width:100%; border-collapse:collapse; background:#fff; box-shadow:0 4px 6px rgba(0,0,0,.1); border-radius:12px; overflow:hidden; min-width:1600px; }
+    table{ width:100%; border-collapse:collapse; background:#fff; box-shadow:0 4px 6px rgba(0,0,0,.1); border-radius:12px; overflow:hidden; /* ลบ min-width:1600px เพื่อ responsive */ }
     th,td{ padding:6px 10px; text-align:left; border:1px solid #ccc; white-space:normal; word-wrap:break-word; font-size:14px; }
     th:nth-child(1), td:nth-child(1),
     th:nth-child(4), td:nth-child(4),
@@ -477,7 +476,7 @@
     .pivot-total td {
       border: 2px solid #007bff !important;
     }
-  
+ 
     .detail-summary-table {
       width: 100%;
       table-layout: auto;
@@ -587,7 +586,7 @@
       .pagination{ flex-direction:column; gap:10px; }
       .items-per-page{ margin-left:0; margin-top:10px; }
       .modal-content{ margin:2% auto; width:98%; padding:15px; max-height:90vh; }
-      table{ min-width:1000px; }
+      table{ /* min-width:1000px; ลบเพื่อ responsive */ }
       h2 { font-size: 18px; }
       /* 🔥 MOBILE PIVOT - ปรับใหม่ให้สมดุล 🔥 */
       .pivot-table th:first-child, .pivot-table td:first-child {
@@ -773,7 +772,6 @@
     let itemsPerPage = 20;
     let sortConfig = { column: 'DateKeep', direction: 'desc' };
     let currentRowData = null;
- 
     function parseDate(dateStr) {
       if (!dateStr || typeof dateStr !== 'string') return new Date(0);
       const parts = dateStr.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})/);
@@ -880,18 +878,17 @@
       link.click();
       URL.revokeObjectURL(link.href);
     }
- 
     function generatePivotSummary() {
       const currentPlantCall = plantCallFilter.value;
       const currentPlant = plantFilter.value;
       const currentStatus = statusFilter.value;
       const currentSearch = searchInput.value;
-   
+  
       if (!allData || allData.length === 0) {
         alert("ไม่มีข้อมูลในระบบสำหรับสรุปข้อมูล");
         return;
       }
-   
+  
       let filteredData = allData.filter(row => {
         if (!row) return false;
         return (
@@ -904,22 +901,22 @@
           )
         );
       });
-   
+  
       if (filteredData.length === 0) {
         summaryContent.innerHTML = '<p style="text-align: center; font-size: 18px; color: #6c757d;">ไม่มีข้อมูลที่ตรงกับเงื่อนไข</p>';
         summaryModal.style.display = "block";
         return;
       }
-   
+  
       const pivotMap = new Map();
       filteredData.forEach(row => {
         const code = row["Spare Part Code"] || "";
         const name = row["Spare Part Name"] || "";
         const status = row["Status"] || "อื่นๆ";
         const qty = parseFloat(row["Qty"]) || 0;
-     
+    
         if (!code) return;
-     
+    
         if (!pivotMap.has(code)) {
           pivotMap.set(code, { code, name, totals: new Map() });
         }
@@ -929,7 +926,7 @@
         }
         item.totals.set(status, item.totals.get(status) + qty);
       });
-   
+  
       const allStatuses = [...new Set(filteredData.map(row => row["Status"]).filter(Boolean))].sort();
       if (!allStatuses.includes("อื่นๆ") && filteredData.some(row => !row["Status"])) {
         allStatuses.push("อื่นๆ");
@@ -938,19 +935,19 @@
         const order = ["คลังพื้นที่", "ระหว่างขนส่ง", "รอส่งเคลม", "ส่งTSCแล้ว", "สำเร็จ", "อื่นๆ"];
         return order.indexOf(a) - order.indexOf(b);
       });
-   
+  
       let html = '<table class="pivot-table"><thead><tr><th>Code</th><th>Description</th>';
       allStatuses.forEach(status => {
         const className = getStatusClass(status);
         html += `<th class="${className}">${status}</th>`;
       });
       html += '<th class="pivot-total">รวม</th></tr></thead><tbody>';
-   
+  
       let grandTotal = 0;
       pivotMap.forEach(item => {
         let rowTotal = 0;
         html += `<tr><td>${item.code}</td><td style="text-align: left; padding-left: 12px;">${item.name}</td>`;
-     
+    
         allStatuses.forEach(status => {
           const qty = item.totals.get(status) || 0;
           rowTotal += qty;
@@ -958,12 +955,12 @@
           const displayQty = qty.toFixed(0) === "0" ? "-" : qty.toFixed(0);
           html += `<td class="${className}">${displayQty}</td>`;
         });
-     
+    
         grandTotal += rowTotal;
         const displayRowTotal = rowTotal.toFixed(0) === "0" ? "-" : rowTotal.toFixed(0);
         html += `<td class="pivot-total">${displayRowTotal}</td></tr>`;
       });
-   
+  
       html += `<tr class="pivot-total"><td colspan="2"><strong>รวมทั้งหมด</strong></td>`;
       allStatuses.forEach(status => {
         const statusTotal = Array.from(pivotMap.values()).reduce((sum, item) => sum + (item.totals.get(status) || 0), 0);
@@ -972,12 +969,11 @@
       });
       const displayGrandTotal = grandTotal.toFixed(0) === "0" ? "-" : grandTotal.toFixed(0);
       html += `<td class="pivot-total"><strong>${displayGrandTotal}</strong></td></tr>`;
-   
+  
       html += '</tbody></table>';
       summaryContent.innerHTML = html;
       summaryModal.style.display = "block";
     }
- 
     function getStatusClass(status) {
       if (status === "สำเร็จ") return "status-success";
       if (status === "ส่งTSCแล้ว") return "status-sent";
@@ -986,7 +982,6 @@
       if (status === "คลังพื้นที่") return "status-other";
       return "status-other";
     }
- 
     function printModalContent() {
       if (!currentRowData) { alert("ไม่พบข้อมูลสำหรับการพิมพ์"); return; }
       const modalData = currentRowData;
@@ -1030,7 +1025,6 @@
       `);
       printWindow.document.close();
     }
- 
     closeModal.onclick = () => { modal.style.display = "none"; currentRowData = null; };
     closeSummaryModal.onclick = () => { summaryModal.style.display = "none"; };
     window.onclick = e => {
@@ -1042,7 +1036,6 @@
     itemsPerPageSelect.addEventListener("change", e => { itemsPerPage = parseInt(e.target.value); currentPage = 1; filterAndRenderTable(); });
     searchInput.addEventListener("keypress", e => { if (e.key === "Enter") filterAndRenderTable(); });
     searchButton.addEventListener("click", filterAndRenderTable);
- 
     function populatePlantCallFilter(data) {
       if (!data || data.length === 0) return;
       const plantCalls = [...new Set(data.map(row => row["PlantCall"]).filter(Boolean))].sort();
@@ -1202,7 +1195,7 @@
       const startIdx = (currentPage - 1) * itemsPerPage;
       const endIdx = startIdx + itemsPerPage;
       const paginatedData = data.slice(startIdx, endIdx);
-   
+  
       const workOrderGroups = {};
       data.forEach(row => {
         const wo = row["WorkOrder"];
@@ -1214,7 +1207,7 @@
       uniqueWorkOrders.forEach((wo, index) => {
         colorMap[wo] = `wo-color-${index % 8}`;
       });
-   
+  
       paginatedData.forEach((row, i) => {
         const tr = document.createElement("tr");
         tr.style.animationDelay = `${i * 0.05}s`;
